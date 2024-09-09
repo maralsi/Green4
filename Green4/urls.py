@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+
 from services import views
 from experts import views
 from reports import views
@@ -28,5 +29,6 @@ urlpatterns = [
     path('api/v1/reports/<int:id>/', views.report_list_api_view),
     path('api/v1/experts/', views.expert_list_api_view),
     path('api/v1/experts/<int:id>/', views.expert_detail_api_view),
+    path('api/v1/reports/feedback/', views.report_feedback_api_view),
 ]
 
