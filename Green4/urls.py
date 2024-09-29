@@ -20,11 +20,13 @@ from django.urls import path
 from services import views
 from experts import views
 from reports import views
+from rest_framework.routers import DefaultRouter
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/services/', views.service_list_api_view),
-    path('api/v1/services/<int:id>/', views.service_detail_api_view),
+    path('api/v1/services/', views.service_list_api_view), # GET - List, Post - create
+    path('api/v1/services/<int:id>/', views.service_detail_api_view), # GET - item, PUT - update, DELETE - destroy
     path('api/v1/reports/', views.report_list_api_view),
     path('api/v1/reports/<int:id>/', views.report_list_api_view),
     path('api/v1/experts/', views.expert_list_api_view),
