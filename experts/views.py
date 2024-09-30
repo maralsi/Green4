@@ -1,12 +1,16 @@
 from django.template.context_processors import request
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
+
 from .models import Expert
 from rest_framework import serializers
 from rest_framework import status
 import experts
 from experts.models import Expert
-from .serializers import ExperteSerializer
+from .serializers import (ExpertSerializer,
+                          ExpertDetailSerializer,
+                          ExpertValidSerializer)
 
 
 # Create your views here.
@@ -60,12 +64,15 @@ def expert_detail_api_view(request, id):
         data = ExpertSerializer(expert).data
         return Response(data=data)
     elif request.method == 'PUT':
-        expert.name = request.data.get('name')
-        expert.experience = request.data.get('experience')
-        expert.education = request.data.get('education')
-        expert.is_active = request.data.get('is_active')
+        serializer = ExpertValidSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        expert.name = serializer.validated_data.get('name')
+        expert.experience = serializer.validated_data.get('experience')
+        expert.education = serializer.validated_data.get('education')
+        expert.is_active = serializer.validated_data.get('is_active')
         expert.save()
-        expert.tags.set(request.data.get('tags'))
+        expert.tags.set(serializer.validated_data.get('tags'))
         return Response(status=status.HTTP_201_CREATED,
                         data=ExperteSerializer(expert).data)
 

@@ -7,6 +7,7 @@ from rest_framework import serializers, viewsets, generics
 from rest_framework import status
 from reports.models import Report, Category
 from reports.serializers import ReportDetailSerializer
+from services.serializers import ServiceValidSerializer
 
 
 # Create your views here.
@@ -22,7 +23,6 @@ class ReportSerializer:
 def report_feedback(request):
     feedback = Report.objects.all()
     serializer = ReportDetailSerializer(feedback, many=True)
-
 
 
 @api_view(['GET', 'POST'])
@@ -72,11 +72,14 @@ def report_detail_api_view(request, id):
         return Response(data=data)
 
     elif request.method == 'PUT':
-        reports.category = request.data.get('category')
-        reports.tags = request.data.get('tag')
-        reports.name = request.data.get('name')
-        reports.description = request.data.get('description')
-        reports.date = request.data.get('date')
+        serializer = ServiceValidSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        reports.category = serializer.validated_data.get('category')
+        reports.tags = serializer.validated_data.get('tag')
+        reports.name = serializer.validated_data.get('name')
+        reports.description = serializer.validated_data.get('description')
+        reports.date = serializer.validated_data.get('date')
         reports.save()
         return Response(status=status.HTTP_201_CREATED,
                         data=ReportSerializer(reports).data)

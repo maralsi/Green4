@@ -12,7 +12,7 @@ class Service(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE,
                                  null=True, blank=True)  # category_id
     text = models.TextField(null=True, blank=True)
-    field = models.CharField(max_length=255, null=True, blank=True)
+    field = models.CharField(max_length=255)
     cost = models.FloatField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
