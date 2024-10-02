@@ -1,5 +1,4 @@
-import service
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import serializers, viewsets, generics
 from services.models import Service
@@ -7,10 +6,14 @@ from .serializers import (ServiceSerializer,
                           ServiceDetailSerializer,
                           ServiceValidSerializer)
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+
 
 
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
 def service_list_api_view(request):
+    print(request.user)
     if request.method == 'GET':
         # step 1: Collect products from DB
         services = Service.objects.all()
