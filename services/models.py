@@ -1,6 +1,6 @@
 from django.db import models
 
-from reports.models import Category
+from reports.models import Category, AbstractModel
 
 
 # Create your models here
@@ -41,3 +41,6 @@ class Review(models.Model):
 
     def __str__(self):
         return self.text
+
+class Category(AbstractModel):
+    pass

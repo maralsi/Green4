@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework.request.Request import user
+
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -8,24 +8,17 @@ from django.contrib.auth.models import User
 from .serializers import UserCreateSerializer, UserAuthSerializer
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.authtoken.models import Token
+from rest_framework.views import APIView
 
 
-@api_view(['POST'])
-def authorization_api_view(request):
+class AuthApiView(APIView):
+    def post(self, request):
     # Validation
     serializer = UserAuthSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
     # Authentication
     user = authenticate(**serializer.validated_data)
-    if user:
-        try:
-            token = Token.objects.get(user=user)
-        except:
-            token = Token.objects.create(user=user)
-        return Response(data={'key': token.key})
-    return Response(status=status.HTTP_401_UNAUTHORIZED,
-                    data={'error': 'User credentials are wrong!'})
 
 
 @api_view(['POST'])
