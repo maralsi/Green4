@@ -10,7 +10,27 @@ from reports.serializers import ReportDetailSerializer
 from services.serializers import ServiceValidSerializer
 
 
-# Create your views here.
+from rest_framework.views import APIView
+
+
+class ReportAuthSerializer:
+    pass
+
+
+def authenticate(param):
+    pass
+
+
+class AuthApiView(APIView):
+    def post(self, request):
+    #Validation
+    serializer = ReportAuthSerializer()
+    serializer.is_valid(raise_exception=True)
+
+    # Authentication
+    user = authenticate(**serializer.validated_data)
+
+
 
 class ReportSerializer:
     def __init__(self):

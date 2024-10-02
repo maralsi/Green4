@@ -1,8 +1,10 @@
+from django.contrib.auth import authenticate
 from django.template.context_processors import request
+from rest_framework.authtoken.admin import User
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-
+from users.serializers import UserAuthSerializer, UserCreateSerializer
 from .models import Expert
 from rest_framework import serializers
 from rest_framework import status
@@ -12,12 +14,8 @@ from .serializers import (ExpertSerializer,
                           ExpertDetailSerializer,
                           ExpertValidSerializer)
 
-
+from rest_framework.views import APIView
 # Create your views here.
-
-class ExpertSerializer:
-    pass
-
 
 @api_view(['GET', 'POST'])
 def expert_list_api_view(request):
@@ -53,6 +51,11 @@ def expert_list_api_view(request):
         return Response(status=status.HTTP_201_CREATED,
                         data=ExpertSerializer(expert).data)
 
+
+class ExpertSerializer:
+    pass
+
+
 @api_view(['GET', 'PUT', 'DELETE'])
 def expert_detail_api_view(request, id):
     try:
@@ -74,9 +77,50 @@ def expert_detail_api_view(request, id):
         expert.save()
         expert.tags.set(serializer.validated_data.get('tags'))
         return Response(status=status.HTTP_201_CREATED,
-                        data=ExperteSerializer(expert).data)
+                        data=ExpertSerializer(expert).data)
 
     elif request.method == 'DELETE':
         expert.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+class ExpertAuthSerializer:
+    def __init__(self):
+        self.validated_data = None
+
+    pass
+
+    def is_valid(self, raise_exception):
+        pass
+
+
+class AuthApiView(APIView):
+    def post(self, request):
+# Validation
+    serializer = ExpertAuthSerializer()
+    serializer.is_valid(raise_exception=True)
+
+    # Authentication
+    expert = authenticate(**serializer.validated_data)
+
+
+class ExpertCreateSerializer:
+    pass
+
+
+@api_view(['POST'])
+def registration_api_view(request):
+    # Validation
+    serializer = ExpertCreateSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+
+    # Create user
+    username = serializer.validated_data['username']
+    password = serializer.validated_data['password']
+    email = serializer.validated_data['email']
+    expert = Expert.objects.create_expert(username=username, email=email, password=password)
+
+    # Return Response
+
+    return Response(status=status.HTTP_201_CREATED,
+                    data={'user_id': expert.id})
