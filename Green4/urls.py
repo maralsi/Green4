@@ -22,6 +22,7 @@ from experts import views
 from reports import views
 from rest_framework.routers import DefaultRouter
 
+from . import swagger
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,3 +36,4 @@ urlpatterns = [
     path('api/v1/users', include('users.urls'))
 ]
 
+urlpatterns += swagger.urlpatterns

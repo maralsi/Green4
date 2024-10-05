@@ -85,3 +85,7 @@ class ReportValidSerializer(serializers.Serializer):
             detail = ErrorDetail('No data provided', code='null')
             ret = {api_settings.NON_FIELD_ERRORS_KEY: [detail]}
         return ReturnDict(ret, serializer=self)
+
+
+class ServiceSerializer:
+    pass

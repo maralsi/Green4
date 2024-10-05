@@ -7,19 +7,24 @@ from rest_framework.utils.serializer_helpers import ReturnDict
 from reports.models import Category
 from reports.serializers import CategorySerializer, TagSerializer
 from .models import Service
+from services.serializers import ServiceSerializer
+
 
 from rest_framework.exceptions import ValidationError
 
 
-
-class ServiceSerializer(serializers.ModelSerializer):
-    category = CategorySerializer(many=False)
-    tags = TagSerializer(many=True)
+class ServiceSerializer(serializers.Serializer):
+    category = CategorySerializer()
+    tags = TagSerializer()
 
     class Meta:
         model = Service
         fields = 'id name cost'.split()
         # fields = '__all__'
+
+
+def get_tags(service):
+    return (tag.name for tag in service.tags.all())
 
 
 class ServiceDetailSerializer(serializer.ModelSerializer):
@@ -29,9 +34,6 @@ class ServiceDetailSerializer(serializer.ModelSerializer):
         model = Service
         fields = 'id name cost'.split()
         depth = 1
-
-    def get_tags(self, service):
-        return (tag.name for tag in service.tags.all())
 
 
 class ServiceValidSerializer(serializers.Serializer):
@@ -52,8 +54,6 @@ class ServiceValidSerializer(serializers.Serializer):
             raise ValidationError('Category does not exist!')
         return attrs
 
-
-
     @property
     def errors(self):
         ret = super().errors
@@ -68,4 +68,8 @@ class ModelSerializer:
 
 
 class SerializerMethodField:
+    pass
+
+
+class CharField:
     pass
