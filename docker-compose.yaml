@@ -1,0 +1,26 @@
+version: '3'
+services:
+  Green4_api:
+    build:
+      context: .
+    container_name: Green4
+    command: sh -c "python manage.py runserver 0.0.0.0.8000"
+    ports:
+      - '8001:0000'
+    depends_on:
+      - Green4_db
+  Green4_db:
+    image: 'postgres:11-alpine3.13'
+    hostname: Green4_host
+    environment:
+      POSTGRES_USER: Green4_user
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: Green4_db
+    ports:
+      - '5433:5432'
+    volumes:
+      - 'web-data:/var/lib/postgresql/data'
+volumes:
+  web-data:
+
+
